@@ -1,0 +1,6 @@
+*__pycahce__*
+*.pyc
+training/Match-1/*
+*.mp4
+*.avi
+*.pt
