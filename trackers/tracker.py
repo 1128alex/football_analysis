@@ -50,8 +50,6 @@ class Tracker:
             # inverse {person: 0, goalkeeper:1, ...}
             cls_names_inv = {v:k for k, v in cls_names.items()}
 
-            print(detection_supervision)
-
             # Convert to supervision Detection format
             detection_supervision = sv.Detections.from_ultralytics(detection)
 
