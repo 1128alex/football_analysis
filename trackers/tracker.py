@@ -98,15 +98,17 @@ class Tracker:
 
         return tracks
 
-    # Drawing ellipse
+    # Drawing player UI
     def draw_ellipse(self, frame, bbox, color, track_id=None):
+        # Drawing ellipse
         y2 = int(bbox[3])
 
         x_center, _ = get_center_of_bbox(bbox)
         width = get_bbox_width(bbox)
 
         cv2.ellipse(frame, center=(x_center, y2), axes=(int(width), int(0.35*width)), angle=0.0, startAngle=-45, endAngle=235, color=color, thickness=2, lineType=cv2.LINE_4)
-        
+
+        # Labelling players with numbers
         rectangle_width = 40
         rectangle_height = 20
         # define xy coordinates of the rectangle
