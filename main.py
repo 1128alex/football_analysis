@@ -1,5 +1,7 @@
 from utils import read_video, save_video
 from trackers import Tracker
+import cv2
+from team_assigner import TeamAssigner
 
 def main():
     # Read Video
@@ -8,6 +10,30 @@ def main():
     tracker = Tracker('models/best.pt')
 
     tracks = tracker.get_object_tracks(video_frames, read_from_stub=True, stub_path='stubs/track_stubs.pkl') 
+
+    # Assign player teams
+    team_assigner = TeamAssigner()
+    team_assigner.assign_team_color(video_frames[0], tracks['players'][0])
+
+    # loop over each player in each team
+    for frame_num, player_track in enumerate(tracks['players']):
+        for player_id, track in player_track.items():
+            team = team_assigner.get_player_team(video_frames[frame_num], track['bbox'], player_id)
+            tracks['players'][frame_num][player_id]['team'] = team
+            tracks['players'][frame_num][player_id]['team_color'] = team_assigner.team_colors[team]
+
+    # # save cropped image of a player
+    # for track_id, player in tracks['players'][0].items():
+    #     bbox = player['bbox']
+    #     frame = video_frames[0]
+
+    #     # crop bbox from frame
+    #     cropped_image = frame[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
+
+    #     # save image
+    #     cv2.imwrite("output_videos/cropped_image.jpg", cropped_image)
+
+    #     break
 
     # Draw object tracks
     output_video_frames = tracker.draw_annotations(video_frames, tracks)
