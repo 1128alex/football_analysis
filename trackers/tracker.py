@@ -154,6 +154,11 @@ class Tracker:
         cv2.drawContours(frame, [triangle_points], 0, (0, 0, 0), 2)
         return frame
 
+    # def draw_team_ball_control(self, frame, frane_num, team_ball_control):
+    #     overlay = frame.copy()
+    #     cv2.rectangle(overlay, (1350, 850), (1900, 970), (255, 255, 255), -1)
+    #     alph = 0.4
+
     # Making annotations
     def draw_annotations(self, video_frames, tracks):
         output_video_frames = []
@@ -169,6 +174,10 @@ class Tracker:
                 color = player.get("team_color", (0, 0, 255))
                 # Draw ellipse
                 frame = self.draw_ellipse(frame, player["bbox"], color, track_id)
+
+                if player.get('has_ball', False):
+                    frame = self.draw_triangle(frame, player["bbox"], (0,0,255))
+
 
              # Draw referees
             for _, referee in referee_dict.items():
