@@ -4,3 +4,5 @@ training/Match-1/*
 *.mp4
 *.avi
 *.pt
+runs/*
+training/*
