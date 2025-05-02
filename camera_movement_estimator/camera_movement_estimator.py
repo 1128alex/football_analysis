@@ -4,7 +4,7 @@ import numpy as np
 import os
 import sys
 sys.path.append('../')
-from utils import measure_distance
+from utils import measure_distance, measure_xy_distance
 
 class CameraMovementEstimator():
     def __init__(self, frame):
@@ -44,12 +44,12 @@ class CameraMovementEstimator():
 
         for frame_num in range(1, len(frames)):
             frame_gray = cv2.cvtColor(frames[frame_num], cv2.COLOR_BGR2GRAY)
-            new_features, _,_ = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, old_features, NONE, **self.lk_params)
+            new_features, _,_ = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, old_features, None, **self.lk_params)
 
             max_distance = 0
             camera_movement_x, camera_movement_y = 0,0
 
-            for i, (new, old) in enumerate(zip(new_featuers, old_features)):
+            for i, (new, old) in enumerate(zip(new_features, old_features)):
                 new_features_point = new.ravel()
                 old_features_point = old.ravel()
 

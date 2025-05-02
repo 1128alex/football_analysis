@@ -67,49 +67,44 @@ class Tracker:
             # {0:person, 1:goalkeeper, ...}
             cls_names = detection.names
             # inverse {person: 0, goalkeeper:1, ...}
-            cls_names_inv = {v:k for k, v in cls_names.items()}
+            cls_names_inv = {v:k for k,v in cls_names.items()}
 
-            # Convert to supervision Detection format
+            # Covert to supervision Detection format
             detection_supervision = sv.Detections.from_ultralytics(detection)
 
-            # convert goalkeeper to player object
-            for object_ind, class_id in enumerate(detection_supervision.class_id):
+            # Convert GoalKeeper to player object
+            for object_ind , class_id in enumerate(detection_supervision.class_id):
                 if cls_names[class_id] == "goalkeeper":
-                    # convert to player object
                     detection_supervision.class_id[object_ind] = cls_names_inv["player"]
 
             # Track Objects
-            detection_with_tracks = self.tracker.update_with_detections(detection_supervision)    
-           
+            detection_with_tracks = self.tracker.update_with_detections(detection_supervision)
+
             tracks["players"].append({})
             tracks["referees"].append({})
             tracks["ball"].append({})
 
-            # Loop over each detection for players and referees
             for frame_detection in detection_with_tracks:
                 bbox = frame_detection[0].tolist()
                 cls_id = frame_detection[3]
                 track_id = frame_detection[4]
 
-                if cls_id == cls_names_inv["player"]:
+                if cls_id == cls_names_inv['player']:
                     tracks["players"][frame_num][track_id] = {"bbox":bbox}
-
-                if cls_id == cls_names_inv["referee"]:
+                
+                if cls_id == cls_names_inv['referee']:
                     tracks["referees"][frame_num][track_id] = {"bbox":bbox}
-
-            # Loop over each detection for balls
-            for frame_detections in detection_with_tracks:
+            
+            for frame_detection in detection_supervision:
                 bbox = frame_detection[0].tolist()
                 cls_id = frame_detection[3]
 
-                if cls_id == cls_names_inv["ball"]:
+                if cls_id == cls_names_inv['ball']:
                     tracks["ball"][frame_num][1] = {"bbox":bbox}
-        
-        # save
+
         if stub_path is not None:
-            # wb: write bites
-            with open(stub_path, 'wb') as f:
-                pickle.dump(tracks, f)  
+            with open(stub_path,'wb') as f:
+                pickle.dump(tracks,f)
 
         return tracks
 
@@ -145,13 +140,18 @@ class Tracker:
         return frame
 
     # Tracking ball
-    def draw_triangle(self, frame, bbox, color):
-        y = int(bbox[1])
+    def draw_traingle(self,frame,bbox,color):
+        y= int(bbox[1])
         x,_ = get_center_of_bbox(bbox)
-        
-        triangle_points = np.array([[x, y], [x - 10, y - 20], [x + 10, y - 20]])
-        cv2.drawContours(frame, [triangle_points], 0, color, cv2.FILLED)
-        cv2.drawContours(frame, [triangle_points], 0, (0, 0, 0), 2)
+
+        triangle_points = np.array([
+            [x,y],
+            [x-10,y-20],
+            [x+10,y-20],
+        ])
+        cv2.drawContours(frame, [triangle_points],0,color, cv2.FILLED)
+        cv2.drawContours(frame, [triangle_points],0,(0,0,0), 2)
+
         return frame
 
     # def draw_team_ball_control(self, frame, frane_num, team_ball_control):
@@ -159,17 +159,17 @@ class Tracker:
     #     cv2.rectangle(overlay, (1350, 850), (1900, 970), (255, 255, 255), -1)
     #     alph = 0.4
 
-    def draw_team_ball_control(self, frame, frame_num, team_ball_control):
+    def draw_team_ball_control(self,frame,frame_num,team_ball_control):
         # Draw a semi-transparent rectangle
         overlay = frame.copy()
-        cv2.rectangle(overlay, (1350, 850), (1900, 970), (255, 255, 255), -1)
+        cv2.rectangle(overlay, (1350, 850), (1900,970), (255,255,255), -1 )
         alpha = 0.4
         cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
 
-        team_ball_control_till_frame = team_ball_control[:frame_num + 1]
+        team_ball_control_till_frame = team_ball_control[:frame_num+1]
         # Get the number of time each team had ball control
-        team_1_num_frames = team_ball_control_till_frame[team_ball_control_till_frame == 1].shape[0]
-        team_2_num_frames = team_ball_control_till_frame[team_ball_control_till_frame == 2].shape[0]
+        team_1_num_frames = team_ball_control_till_frame[team_ball_control_till_frame==1].shape[0]
+        team_2_num_frames = team_ball_control_till_frame[team_ball_control_till_frame==2].shape[0]
         team_1 = team_1_num_frames/(team_1_num_frames+team_2_num_frames)
         team_2 = team_2_num_frames/(team_1_num_frames+team_2_num_frames)
 
