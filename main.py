@@ -57,19 +57,6 @@ def main():
         #     team_ball_control.append(team_ball_control[-1])
     team_ball_control = np.array(team_ball_control)
 
-    # # save cropped image of a player
-    # for track_id, player in tracks['players'][0].items():
-    #     bbox = player['bbox']
-    #     frame = video_frames[0]
-
-    #     # crop bbox from frame
-    #     cropped_image = frame[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
-
-    #     # save image
-    #     cv2.imwrite("output_videos/cropped_image.jpg", cropped_image)
-
-    #     break
-
     # Draw object tracks
     output_video_frames = tracker.draw_annotations(
         video_frames, tracks, team_ball_control
