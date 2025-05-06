@@ -6,3 +6,4 @@ training/Match-1/*
 *.pt
 runs/*
 training/*
+.venv
