@@ -7,3 +7,4 @@ training/Match-1/*
 runs/*
 training/*
 .venv
+*.pkl
