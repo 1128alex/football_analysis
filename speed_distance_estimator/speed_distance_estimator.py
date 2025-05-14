@@ -10,7 +10,7 @@ class SpeedDistanceEstimator:
         self.frame_window = 5
         self.frame_rate = 24
 
-    def add_speed_and_distance_to_tracks(self, tracks):
+    def add_speed_distance_to_tracks(self, tracks):
         total_distance = {}
 
         for object, object_tracks in tracks.items():
@@ -21,12 +21,7 @@ class SpeedDistanceEstimator:
                 last_frame = min(frame_num + self.frame_window, number_of_frames - 1)
 
                 for track_id, _ in object_tracks[frame_num].items():
-                    if (
-                        "position_transformed" not in object_tracks[frame_num][track_id]
-                        or track_id not in object_tracks[last_frame]
-                        or "position_transformed"
-                        not in object_tracks[last_frame][track_id]
-                    ):
+                    if track_id not in object_tracks[last_frame]:
                         continue
 
                     start_position = object_tracks[frame_num][track_id][
@@ -62,7 +57,7 @@ class SpeedDistanceEstimator:
                             total_distance[object][track_id]
                         )
 
-    def draw_speed_and_distance(self, frames, tracks):
+    def draw_speed_distance(self, frames, tracks):
         output_frames = []
         for frame_num, frame in enumerate(frames):
             for object, object_tracks in tracks.items():

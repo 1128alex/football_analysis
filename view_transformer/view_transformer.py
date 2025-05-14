@@ -18,7 +18,7 @@ class ViewTransformer:
         self.pixel_vertices = self.pixel_vertices.astype(np.float32)
         self.target_vertices = self.target_vertices.astype(np.float32)
 
-        self.persepctive_trasnformer = cv2.getPerspectiveTransform(
+        self.persepctive_transformer = cv2.getPerspectiveTransform(
             self.pixel_vertices, self.target_vertices
         )
 
@@ -30,7 +30,7 @@ class ViewTransformer:
 
         reshaped_point = point.reshape(-1, 1, 2).astype(np.float32)
         tranform_point = cv2.perspectiveTransform(
-            reshaped_point, self.persepctive_trasnformer
+            reshaped_point, self.persepctive_transformer
         )
         return tranform_point.reshape(-1, 2)
 
@@ -38,8 +38,6 @@ class ViewTransformer:
         for object, object_tracks in tracks.items():
             for frame_num, track in enumerate(object_tracks):
                 for track_id, track_info in track.items():
-                    if "position_adjusted" not in track_info:
-                        continue
                     position = track_info["position_adjusted"]
                     position = np.array(position)
                     position_transformed = self.transform_point(position)
