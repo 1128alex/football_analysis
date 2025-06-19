@@ -45,12 +45,7 @@ class CameraMovementEstimator:
                         "position_adjusted"
                     ] = position_adjusted
 
-    def get_camera_movement(self, frames, read_from_stub=False, stub_path=None):
-        # Read the stub
-        if read_from_stub and stub_path is not None and os.path.exists(stub_path):
-            with open(stub_path, "rb") as f:
-                return pickle.load(f)
-
+    def get_camera_movement(self, frames):
         camera_movement = [[0, 0]] * len(frames)
 
         old_gray = cv2.cvtColor(frames[0], cv2.COLOR_BGR2GRAY)

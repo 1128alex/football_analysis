@@ -1,7 +1,6 @@
 from ultralytics import YOLO
 import supervision as sv
 import pickle
-import os
 import numpy as np
 import pandas as pd
 import cv2
@@ -51,13 +50,7 @@ class Tracker:
             detections += detections_batch
         return detections
 
-    def get_object_tracks(self, frames, read_from_stub=False, stub_path=None):
-
-        if read_from_stub and stub_path is not None and os.path.exists(stub_path):
-            with open(stub_path, "rb") as f:
-                tracks = pickle.load(f)
-            return tracks
-
+    def get_object_tracks(self, frames):
         detections = self.detect_frames(frames)
 
         tracks = {"players": [], "referees": [], "ball": []}
@@ -212,6 +205,7 @@ class Tracker:
         return frame
 
     def draw_annotations(self, video_frames, tracks, team_ball_possession):
+        # def draw_annotations(self, video_frames, tracks):
         output_video_frames = []
         for frame_num, frame in enumerate(video_frames):
             frame = frame.copy()

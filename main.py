@@ -11,13 +11,13 @@ from speed_distance_estimator import SpeedDistanceEstimator
 
 def main():
     # Read Video
-    video_frames = read_video("input_videos/08fd33_4.mp4")
+    video_frames = read_video("input_videos/input_video.mp4")
 
     # Initialize Tracker
     tracker = Tracker("models/best.pt")
 
     tracks = tracker.get_object_tracks(
-        video_frames, read_from_stub=True, stub_path="stubs/track_stubs.pkl"
+        video_frames
     )
     # Get object positions
     tracker.add_position_to_tracks(tracks)
@@ -25,7 +25,7 @@ def main():
     # camera movement estimator
     camera_movement_estimator = CameraMovementEstimator(video_frames[0])
     camera_movement_per_frame = camera_movement_estimator.get_camera_movement(
-        video_frames, read_from_stub=True, stub_path="stubs/camera_movement_stub.pkl"
+        video_frames
     )
     camera_movement_estimator.add_adjust_positions_to_tracks(
         tracks, camera_movement_per_frame
@@ -75,7 +75,9 @@ def main():
     # Draw output
     # Draw object Tracks
     output_video_frames = tracker.draw_annotations(
-        video_frames, tracks, team_ball_possession
+        video_frames,
+        tracks,
+        #   team_ball_possession
     )
 
     # Draw Camera movement

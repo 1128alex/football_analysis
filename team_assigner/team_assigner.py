@@ -12,6 +12,8 @@ class TeamAssigner:
 
         # Preform K-means with 2 clusters
         kmeans = KMeans(n_clusters=2, init="k-means++", n_init=1)
+        if image_2d.shape[0] == 0:
+            raise ValueError("No data to cluster: image_2d is empty.")
         kmeans.fit(image_2d)
 
         return kmeans
